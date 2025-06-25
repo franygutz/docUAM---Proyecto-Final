@@ -20,6 +20,12 @@
   Debería de verse algo así: ![image](https://github.com/user-attachments/assets/ccb7c9b4-c114-48f0-91e7-83cdc673c644)
   Al finalizar, debería de mostrar algo parecido a esto: ![image](https://github.com/user-attachments/assets/7b1a0f4f-3774-4369-a8e9-3325312c2e52)
 
+
+
+
+
+
+
   
 
 5) Dirigirse a VSC (Visual Studio Code) y realizar lo siguiente:
