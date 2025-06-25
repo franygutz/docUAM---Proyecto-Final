@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="es" class="h-full bg-gray-100">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Mis Archivos - docUAM</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?display=swap&family=Inter:wght@400;500;600;700" />
+    <!-- Usaremos SVGs incrustados, no se necesita el script de Heroicons -->
+</head>
+
+<body class="h-full font-inter">
+    <div class="flex min-h-screen">
+        <!-- Barra lateral de navegación -->
+        <aside class="w-64 flex-shrink-0 bg-white border-r border-gray-200 flex flex-col">
+            <div class="h-16 flex items-center justify-center border-b px-4">
+                <div class="flex items-center gap-3">
+                    <svg class="w-8 h-8 text-blue-600" viewBox="0 0 48 48" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6 6H42L36 24L42 42H6L12 24L6 6Z" fill="currentColor" />
+                    </svg>
+                    <h1 class="text-xl font-bold text-gray-900">docUAM</h1>
+                </div>
+            </div>
+            <nav class="flex-1 p-4 space-y-2">
+                <a href="{{ url_for('home') }}"
+                    class="flex items-center gap-3 px-4 py-2.5 text-gray-600 hover:bg-gray-100 hover:text-gray-900 font-medium rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                    Home
+                </a>
+                <a href="{{ url_for('my_files') }}"
+                    class="flex items-center gap-3 px-4 py-2.5 bg-blue-50 text-blue-700 font-semibold rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                    </svg>
+                    Mis Archivos
+                </a>
+            </nav>
+            <div class="p-4 border-t">
+                <a href="{{ url_for('logout') }}"
+                    class="flex items-center gap-3 px-4 py-2.5 text-gray-600 hover:bg-gray-100 hover:text-gray-900 font-medium rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    Cerrar Sesión
+                </a>
+            </div>
+        </aside>
+
+        <!-- Contenido Principal -->
+        <main class="flex-1 p-8">
+            <!-- Barra de herramientas superior -->
+            <div class="flex flex-col sm:flex-row items-start sm:items-center sm:justify-between mb-4">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900">Mis Archivos</h1>
+                    <p class="text-gray-600 mt-1">Gestiona todos tus documentos en un solo lugar.</p>
+                </div>
+                <button onclick="document.getElementById('upload-modal').classList.remove('hidden')"
+                    class="flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white font-semibold rounded-lg shadow-sm hover:bg-blue-700 mt-4 sm:mt-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                    </svg>
+                    Subir Archivo
+                </button>
+            </div>
+
+            <!-- SECCIÓN PARA MOSTRAR NOTIFICACIONES (FLASH) -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="mb-4 space-y-2">
+                {% for category, message in messages %}
+                <div class="p-4 rounded-md text-sm
+                        {% if category == 'success' %} bg-green-100 text-green-800 border border-green-200
+                        {% elif category == 'warning' %} bg-yellow-100 text-yellow-800 border border-yellow-200
+                        {% elif category == 'error' %} bg-red-100 text-red-800 border border-red-200
+                        {% else %} bg-blue-100 text-blue-800 border border-blue-200
+                        {% endif %}" role="alert">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+
+
+            <!-- Formulario de búsqueda y ordenamiento -->
+            <div class="flex items-center justify-between mb-6 bg-white p-3 rounded-xl shadow-sm">
+                <form id="search-sort-form" method="get" action="{{ url_for('my_files') }}"
+                    class="flex items-center gap-4 w-full">
+                    <div class="relative flex-grow">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-400" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
+                        <input type="search" name="search" placeholder="Buscar por título..."
+                            value="{{ search_query or '' }}"
+                            class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <select name="sort_by" onchange="this.form.submit()"
+                        class="form-select text-sm rounded-lg border-gray-200 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <option value="title" {% if sort_by=='title' %}selected{% endif %}>Título</option>
+                        <option value="author" {% if sort_by=='author' %}selected{% endif %}>Autor</option>
+                        <option value="created_at" {% if sort_by=='created_at' %}selected{% endif %}>Fecha</option>
+                    </select>
+                    <select name="sort_dir" onchange="this.form.submit()"
+                        class="form-select text-sm rounded-lg border-gray-200 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        <option value="asc" {% if sort_dir=='asc' %}selected{% endif %}>Asc</option>
+                        <option value="desc" {% if sort_dir=='desc' %}selected{% endif %}>Desc</option>
+                    </select>
+                    <button type="submit"
+                        class="px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg">Buscar</button>
+                </form>
+            </div>
+
+            <!-- Cuadrícula de Archivos -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {% for doc in docs %}
+                <a href="{{ url_for('document_detail', doc_id=doc.id) }}"
+                    class="bg-white rounded-xl shadow-sm p-4 flex flex-col justify-between hover:shadow-lg hover:ring-2 hover:ring-blue-500 transition-all">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            {% if doc.filename.endswith('.pdf') %}
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-red-500" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                            </svg>
+                            {% elif doc.filename.endswith('.docx') %}
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-blue-500" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                            </svg>
+                            {% elif doc.filename.endswith('.pptx') %}
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-orange-500" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                            </svg>
+                            {% else %}
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-gray-500" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                            </svg>
+                            {% endif %}
+                        </div>
+                        <h3 class="font-semibold text-gray-800 truncate" title="{{ doc.title }}">{{ doc.title }}</h3>
+                        <p class="text-sm text-gray-500 truncate">{{ doc.author or 'Sin autor' }}</p>
+                    </div>
+                    <p class="text-xs text-gray-400 mt-4">
+                        {% if doc.created_at %}{{ doc.created_at.strftime('%d de %b, %Y') }}{% else %}Fecha
+                        desconocida{% endif %}
+                    </p>
+                </a>
+                {% endfor %}
+            </div>
+
+            {% if not docs and not search_query %}
+            <div class="col-span-full text-center py-16 bg-white rounded-xl shadow-sm mt-6">
+                <h3 class="text-lg font-semibold text-gray-700">Aún no tienes archivos</h3>
+                <p class="text-gray-500 mt-1">Haz clic en "Subir Archivo" para empezar.</p>
+            </div>
+            {% elif not docs and search_query %}
+            <div class="col-span-full text-center py-16 bg-white rounded-xl shadow-sm mt-6">
+                <h3 class="text-lg font-semibold text-gray-700">No se encontraron archivos</h3>
+                <p class="text-gray-500 mt-1">No hay archivos que coincidan con tu búsqueda de "{{ search_query }}".</p>
+            </div>
+            {% endif %}
+        </main>
+    </div>
+
+    <div id="upload-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="bg-white p-8 rounded-xl shadow-2xl max-w-lg w-full">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold">Subir un nuevo archivo</h2>
+                <button onclick="document.getElementById('upload-modal').classList.add('hidden')"
+                    class="text-gray-500 hover:text-gray-800 text-3xl leading-none">&times;</button>
+            </div>
+            <form action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data">
+                <p class="mb-4 text-gray-600">Selecciona un archivo PDF, DOCX, PPTX o TXT.</p>
+                <input type="file" name="file" required
+                    class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
+                <div class="mt-6 flex justify-end gap-4">
+                    <button type="button" onclick="document.getElementById('upload-modal').classList.add('hidden')"
+                        class="px-4 py-2 bg-gray-200 rounded-lg font-bold">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg">Subir</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>
