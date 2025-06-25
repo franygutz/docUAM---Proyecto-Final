@@ -31,6 +31,7 @@
 5) Dirigirse a VSC (Visual Studio Code) y realizar lo siguiente:
   a) **ctrl + shift + p**
   b) En la búsqueda que se abre, digitar: Python: Select Interpreter
+<br></br>
   ![image](https://github.com/user-attachments/assets/119ffa18-6294-482f-8b91-ac5ca208dcaf)
 
 <br></br>
