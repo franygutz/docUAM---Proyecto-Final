@@ -29,6 +29,10 @@
 
 
 
+
+
+
+
   c) En la pestaña que se abre, escoger como interpreter venv:
   ![image](https://github.com/user-attachments/assets/c486397c-a683-475f-8f40-26840f2db387)
 
